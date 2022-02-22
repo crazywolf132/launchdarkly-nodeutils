@@ -99,6 +99,26 @@ new LaunchDarklyUtils().create(process.env.LAUNCHDARKLY_API_TOKEN, log).then(ldU
         });
 
     program
+        .command(`createFeatureFlag <projectKey> <featureFlagName> <featureFlagKey> <featureFlagVariations> <featureFlagDefaults> (description) (temporary) (tags) (includeInSnippet) (clientSideAvailability)`)
+        .description('create new feature flag')
+        .action((projectKey, featureFlagName, featureFlagKey, featureFlagVariations, featureFlagDefaults, description, temporary, tags, includeInSnippet, clientSideAvailability) => {
+            ldUtils.flags.createFeatureFlag(
+                projectKey,
+                featureFlagName,
+                featureFlagKey,
+                description,
+                featureFlagVariations,
+                temporary,
+                tags,
+                includeInSnippet,
+                clientSideAvailability,
+                featureFlagDefaults
+            ).then((response) => {
+                console.log(json.plain(response))
+            })
+        })
+
+    program
         .command(`toggleFeatureFlag <projectKey> <featureFlagKey> <environmentKeyQuery> <value>`)
         .description('set boolean flag state')
         .action((projectKey, featureFlagKey, environmentKeyQuery, value) => {

@@ -131,6 +131,62 @@ export class LaunchDarklyUtilsFlags {
     }
 
     /**
+     * 
+     * @param {string} projectKey - project identifier
+     * @param {string} flagName - feature flag name
+     * @param {string} flagKey - feature flag identifier
+     * @param {string} flagDescription - feature flag description
+     * @param {Object} flagVariations - feature flag variations
+     * @param {boolean} flagTemporary - whether this flag is temporary
+     * @param {string[]} flagTags - feature flag tags
+     * @param {boolean} flagIncludeInSnippet - Whether this flag should be made available to the client-side JavaScript SDK.
+     * @param {Object} flagClientSideAvailability - feature flag clientSide availability
+     * @param {Object} flagDefaults - feature flag defaults
+     * @returns {Promise}
+     * @fulfil {Object} create feature flag json
+     * @reject {Error} object with message
+     * @example lduitls createFeatureFlag my-project my-flag my-flag-key my-flag-variations my-flag-defaults {description} {temporary} {tags} {includeInSnippet} {clientSideAvailability}
+     */
+    async createFeatureFlag(
+        projectKey,
+        flagName,
+        flagKey,
+        flagDescription,
+        flagVariations,
+        flagTemporary,
+        flagTags,
+        flagIncludeInSnippet,
+        flagClientSideAvailability,
+        flagDefaults
+    ) {
+        const flagObj = {
+            name: flagName,
+            key: flagKey,
+            description: flagDescription,
+            variations: flagVariations,
+            temporary: flagTemporary,
+            tags: flagTags,
+            includeInSnippet: flagIncludeInSnippet,
+            clientSideAvailability: flagClientSideAvailability,
+            defaults: flagDefaults
+        }
+        try {
+            return this.apiClient.apis[this.API_GROUP].createFeatureFlag({
+                projectKey,
+                ...flagObj
+            }).then(response => {
+                return response.body;
+            })
+        } catch (e) {
+            throw {
+                api: 'createFeatureFlag',
+                message: e.message,
+                docs: "https://launchdarkly.github.io/ld-openapi/#operation/postFeatureFlag"
+            }
+        }
+    }
+
+    /**
      * Set the boolean state of a single feature flag by key, and environment name
      * @param {string} projectKey - project identifier
      * @param {string} featureFlagKey - feature flag identifier
